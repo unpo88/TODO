@@ -90,9 +90,10 @@ export default defineConfig({
 ``` shell 
 frontend
 ㄴ src
-   ㄴ components
-   ㄴ pages
-   ㄴ types
+   ㄴ todo
+       ㄴ components
+       ㄴ pages
+       ㄴ types
    ㄴ Apps.tsx
    ㄴ main.tsx
 ```
