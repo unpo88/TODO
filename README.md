@@ -26,7 +26,7 @@ $ yarn install
 ## 4. Emotion, Antd, UUID, Prettier, viteTsConfigPaths 등 설치
 ``` shell
 $ yarn add antd @emotion/react @emotion/styled uuid 
-$ yarn add -D prettier @types/uuid vite-tsconfig-paths
+$ yarn add -D prettier @types/uuid vite-tsconfig-paths @swc/plugin-emotion
 ```
 
 ## 5. Vite Config 설정
