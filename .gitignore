@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+__pycache__
+.mariadb
+/backend/*/migrations/**
+/backend/static
+!/backend/*/migrations/__init__.py
