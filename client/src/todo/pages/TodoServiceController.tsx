@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { message } from "antd";
 
 import { ITodo } from "@client/todo/types/todo.ts";
+import TodoApi from "@client/todo/apis.ts";
 
 export interface TodoServiceControllerObject {
   todos: ITodo[];
@@ -12,29 +13,32 @@ export interface TodoServiceControllerObject {
 
 function TodoServiceController(): TodoServiceControllerObject {
   const [todos, setTodos] = useState<ITodo[]>([]);
+  const { getTodos, createTodo, deleteTodo, updateTodo } = TodoApi();
 
-  function handleAddTodo(todo: ITodo) {
-    setTodos((prevTodos) => [...prevTodos, todo]);
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
+  async function fetchTodos() {
+    const todosData = await getTodos();
+    setTodos(todosData);
+  }
+
+  async function handleAddTodo(todo: ITodo) {
+    await createTodo(todo.name);
+    await fetchTodos();
     message.success("할 일 목록을 추가했습니다");
   }
 
-  function handleDeleteTodo(todo: ITodo) {
-    setTodos((prevTodos) =>
-      prevTodos.filter((item) => item.entityId !== todo.entityId),
-    );
-
+  async function handleDeleteTodo(todo: ITodo) {
+    await deleteTodo(todo.entityId);
+    await fetchTodos();
     message.warning("할 일 목록을 삭제했습니다");
   }
 
-  function handleUpdateStatusTodo(todo: ITodo) {
-    setTodos((prevTodos) =>
-      prevTodos.map((item) =>
-        item.entityId === todo.entityId
-          ? { ...item, completed: !item.completed }
-          : item,
-      ),
-    );
-
+  async function handleUpdateStatusTodo(todo: ITodo) {
+    await updateTodo(todo.entityId, todo.name, !todo.completed);
+    await fetchTodos();
     message.info("할 일 목록의 상태를 변경하였습니다");
   }
 
