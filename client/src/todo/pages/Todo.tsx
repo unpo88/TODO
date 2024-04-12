@@ -12,7 +12,7 @@ function Todo() {
   return (
     <Flex justify="center" align="center" wrap="wrap" gap="large" vertical>
       <div css={_S.ContentLayout}>
-        <Introduction title="SOMA" subTitle="할 일 목록을 추가해주세요" />
+        <Introduction title="Whatsup" subTitle="할 일 목록을 추가해주세요" />
       </div>
 
       <Card title="할 일 목록 추가" css={_S.ContentLayout}>
