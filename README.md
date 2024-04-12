@@ -485,6 +485,7 @@ export default defineConfig({
 {
     "compilerOptions": {
         ...
+        "outDir": "./dist/",
         "baseUrl": ".",
         "paths": {
             "@client/*": ["src/*"]
@@ -538,7 +539,7 @@ $ docker run -d -p 8080:80 --name todo todo
 
 ### 항상 Frontend 최신 Build 파일을 올려주어야한다.
 ``` dockerfile
-FROM node:12-alpine as builder
+FROM node:21-alpine as builder
 
 WORKDIR /client
 
@@ -556,9 +557,7 @@ RUN rm -rf /etc/nginx/sites-enabled/default
 RUN rm -rf /etc/nginx/conf.d/default.conf
 COPY nginx/nginx.conf /etc/nginx/conf.d
 
-WORKDIR /client
-
-COPY dist/ dist/
+COPY --from=builder /client/dist/ /client/dist/
 
 EXPOSE 80
 
