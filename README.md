@@ -757,3 +757,100 @@ DATABASES = {
 $ docker-compose up --build
 ```
 
+# AWS EC2 설치 - 첫 번째 배포 방법
+- Amazon Linux
+
+``` shell
+$ sudo yum install git
+$ git clone https://github.com/unpo88/TODO.git
+
+# Docker 설치
+$ sudo yum install -y docker
+$ sudo service docker start
+$ sudo usermod -aG docker $(whoami)
+
+# Docker Compose 설치
+$ sudo curl -L "https://github.com/docker/compose/releases/download/v2.5.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+$ sudo chmod +x /usr/local/bin/docker-compose
+
+# API 호출을 하는 부분을 localhost가 아닌 Backend API를 호출하도록 변경
+$ docker-compose up --build
+
+----
+
+$ SWAP 가상 메모리를 이용하여 메모리를 늘려주기
+$ sudo dd if=/dev/zero of=/swapMem bs=128M count=16
+$ sudo chmod 600 /swapMem
+$ sudo mkswap /swapMem
+$ sudo swapon /swapMem
+$ sudo swapon -s
+$ sudo vi /etc/fstab
+
+sudo yum install git# 마지막 행에 아래 추가
+/swapfile swap swap defaults 0 0
+
+Dockerfile -> 기본 EC2 t2.micro는 Memory가 1GB라서 동작에 어려움있음
+-> RUN node --max-old-space-size=750 /usr/local/bin/npm install -> Docker는 이미지 레이어에서 캐싱이 되기때문에 다시 기다릴 필요 없음   
+```
+
+## ElasticIP 적용까지
+
+# RDS 설정
+### docker-compose.yml, entrypoint.sh 에서 mariadb 관련한 부분을 모두 제거
+### AWS RDS 생성
+### Django Database 설정 변경
+``` python
+  "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "todo",
+        "USER": "<RDS_USER>",
+        "PASSWORD": "<RDS_PASSWORD>",
+        "HOST": "<RDS_HOST", 
+        "PORT": "3306",
+    }
+```
+### RDS Security Group -> 3306 Port 개방
+
+
+# AWS ECS + ECR - 두 번째 배포 방법
+- ECS에서 동작시키기 위한 nginx.conf 파일 수정 필요
+``` nginx configuration
+ server {
+    listen 80;
+
+	location ~ ^/(api)/ {
+		proxy_pass http://127.0.0.1:8000;
+	}
+
+	location /static/ {
+		proxy_pass http://127.0.0.1:8000;
+		alias /static/;
+	}
+
+    location / {
+        root /client/dist/;
+        index index.html;
+        try_files $uri $uri/ /index.html =404;
+    }
+}
+```
+
+- ECR에 PUSH하기 위해 platform 설정 필요
+``` docker-compose.yaml
+version: '3.7'
+
+services:
+    backend:
+        platform: linux/amd64
+        ...
+        
+    frontend:
+        platform: linux/amd64
+        ...
+```
+
+- ECS - Service - TaskDefinition 생성 후 [생성할 때 로그 반드시 생성]
+``` typescript
+// apis.ts
+const API_BASE_URL = "http://<ALB_DNS_NAME>/api";
+```
