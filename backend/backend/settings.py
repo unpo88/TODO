@@ -82,9 +82,9 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "todo",
-        "USER": "whatsup",
-        "PASSWORD": "whatsuppw",
-        "HOST": "mariadb",  # 로컬 개발 환경에서는 localhost
+        "USER": "admin",
+        "PASSWORD": "djangoadminpw",
+        "HOST": "whatsup-rds.ccs2oa6jppk1.ap-northeast-2.rds.amazonaws.com",  # 로컬 개발 환경에서는 localhost
         "PORT": "3306",
     }
 }

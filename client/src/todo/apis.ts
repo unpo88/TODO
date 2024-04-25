@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ITodo } from "@client/todo/types/todo.ts";
 
-const API_BASE_URL = "http://localhost:8000/api";
+const API_BASE_URL = "http://whatsup-alb-1437840517.ap-northeast-2.elb.amazonaws.com/api";
 
 
 function TodoApi() {

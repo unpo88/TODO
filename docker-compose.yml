@@ -1,14 +1,14 @@
-version: '3'
+version: '3.7'
 
 services:
   backend:
+    platform: linux/amd64
     build: .
     ports:
       - '8000:8000'
-    depends_on:
-      - 'mariadb'
 
   frontend:
+    platform: linux/amd64
     build: ./client
     restart: always
     volumes:
@@ -19,15 +19,3 @@ services:
     depends_on:
       - 'backend'
 
-  mariadb:
-    image: 'mariadb:10.6'
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpw
-      MYSQL_DATABASE: todo
-      MYSQL_USER: whatsup
-      MYSQL_PASSWORD: whatsuppw
-    ports:
-      - '3306:3306'
-    volumes:
-      - './.mariadb:/var/lib/mysql'
-    restart: always
