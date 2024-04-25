@@ -790,7 +790,9 @@ sudo yum install git# 마지막 행에 아래 추가
 /swapfile swap swap defaults 0 0
 
 Dockerfile -> 기본 EC2 t2.micro는 Memory가 1GB라서 동작에 어려움있음
--> RUN node --max-old-space-size=750 /usr/local/bin/npm install -> Docker는 이미지 레이어에서 캐싱이 되기때문에 다시 기다릴 필요 없음   
+-> RUN node --max-old-space-size=750 /usr/local/bin/npm install -> Docker는 이미지 레이어에서 캐싱이 되기때문에 다시 기다릴 필요 없음
+
+apis.ts 수정 필요
 ```
 
 ## ElasticIP 적용까지
@@ -818,14 +820,14 @@ Dockerfile -> 기본 EC2 t2.micro는 Memory가 1GB라서 동작에 어려움있�
  server {
     listen 80;
 
-	location ~ ^/(api)/ {
-		proxy_pass http://127.0.0.1:8000;
-	}
+    location ~ ^/(api)/ {
+        proxy_pass http://127.0.0.1:8000;
+    }
 
-	location /static/ {
-		proxy_pass http://127.0.0.1:8000;
-		alias /static/;
-	}
+    location /static/ {
+        proxy_pass http://127.0.0.1:8000;
+        alias /static/;
+    }
 
     location / {
         root /client/dist/;
